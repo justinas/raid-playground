@@ -29,20 +29,18 @@ resource "libvirt_domain" "raidy" {
   name    = "raidy"
   memory  = 2048
   cmdline = []
-  disk = concat(
-    [{
-      volume_id = libvirt_volume.boot.id
 
-      // https://github.com/dmacvicar/terraform-provider-libvirt/issues/728
-      block_device = null, file = null, scsi = null, url = null, wwn = null,
-    }],
-    [for vol in libvirt_volume.data : {
-      volume_id = vol.id
+  disk {
+    volume_id = libvirt_volume.boot.id
+  }
 
-      // https://github.com/dmacvicar/terraform-provider-libvirt/issues/728
-      block_device = null, file = null, scsi = null, url = null, wwn = null, // ?
-    }],
-  )
+  dynamic "disk" {
+    for_each = libvirt_volume.data
+    content {
+      volume_id = disk.value.id
+    }
+  }
+
   network_interface {
     network_name   = "default"
     wait_for_lease = true
