@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import (import ./nixpkgs.nix) { } }:
 let
   makeImage = pkgs.writeShellScriptBin "make-image" ''
     nix-build image.nix -o image
