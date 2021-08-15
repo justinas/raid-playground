@@ -44,6 +44,7 @@ resource "libvirt_domain" "raidy" {
     }],
   )
   network_interface {
-    network_name = "default"
+    network_name   = "default"
+    wait_for_lease = true
   }
 }
